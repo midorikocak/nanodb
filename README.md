@@ -56,17 +56,23 @@ Operations are chained.
 
 ### Insert
 
+Returns inserted array of data.
+
 ```php
     $db->select($tableName)->where('id', $id)->fetch();
 ``` 
 
 ### Update
 
+Returns updated array.
+
 ```php
    $db->update($tableName, $data)->where('id', $id)->execute();
 ``` 
 
 ### Delete
+
+Returns affected rows.
 
 ```php
     $db->delete($tableName)->where('id', $id)->execute();
