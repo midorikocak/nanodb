@@ -175,7 +175,7 @@ class User
         $this->email = $email;
     }
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
