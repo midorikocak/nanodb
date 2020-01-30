@@ -71,18 +71,18 @@ Array
 
 ### Insert
 
-Returns inserted array of data.
+Insert using an array of data. Validation is your responsibility.
 
 ```php
-    $db->select($tableName)->where('id', $id)->fetch();
+    $db->select($tableName)->insert($tableName, $data)->executre();
 ``` 
 
 ### Update
 
-Returns updated array. If id does not exist, throws exception.
+Insert using an array of data. Again validation is your responsibility. If id does not exist, throws exception.
 
 ```php
-   $db->update($tableName, $data)->where('id', $id)->execute();
+   $db->update($tableName, $data)->update($tableName, $data)->where('id', $id)->execute();
 ``` 
 
 ### Delete
@@ -90,7 +90,7 @@ Returns updated array. If id does not exist, throws exception.
 Returns affected rows. If id does not exist, throws exception.
 
 ```php
-    $db->delete($tableName)->where('id', $id)->execute();
+    $db->delete($tableName)->delete('id', $id)->execute();
 ``` 
 
 ## CrudInterface
