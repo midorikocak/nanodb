@@ -1,5 +1,5 @@
 ![nano API](nano.png)
-# Nano
+# Nano DB
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
@@ -9,9 +9,300 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 
-Nano is a very very tiny php library that allows you to create very fast rest APIs. 
+Nano DB is a tiny php library that allows you to define easily usable repositories.
 
-Think it's like Slim but if Slim is slim, Nano is anorexic.
+There are 3 handy classes and 1 example in this library.
+Let's start with basics:
+
+## Database
+
+To use database library, simple inject it with pdo.
+    
+```php
+    use midorikocak\nanodb\Database;
+
+    $pdo = new PDO('sqlite::memory:');
+    $db = new Database($pdo);
+``` 
+
+Operations are chained.
+
+```php
+    $db->insert($tableName, $data)->execute();
+
+    $lastInsertId = $db->lastInsertId();
+    $insertedItem = $db->select($tableName)->where('id', $lastInsertId)->fetch();
+```
+
+### Select
+
+```php
+    $db->select($tableName)->where('id', $id)->fetch();
+``` 
+
+### Insert
+
+```php
+    $db->select($tableName)->where('id', $id)->fetch();
+``` 
+
+### Update
+
+```php
+   $db->update($tableName, $data)->where('id', $id)->execute();
+``` 
+
+### Delete
+
+```php
+    $db->delete($tableName)->where('id', $id)->execute();
+``` 
+
+## CrudInterface
+
+The crud interface is the interface of repositories.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace midorikocak\nanodb;
+
+interface CrudInterface
+{
+    public function read(string $id);
+
+    public function readAll(array $constraints = [], array $columns = []): array;
+
+    public function save($item);
+
+    public function remove($data): int;
+}
+
+```
+
+If you want to use arrays to interact with your database, you can use the array repository.
+
+```php
+use midorikocak\nanodb\ArrayRepository;
+
+
+$tableName = 'users';
+$schema = [
+    'username'=>'string',
+    'password'=>'string',
+    'email'=>'email'
+];
+
+
+$repository = new ArrayRepository($tableName, $this->db, $schema);
+
+```
+
+Here `$schema` array is a simple optional array for Array validator, checked on every input with data. You can override it by extending `ArrayValidator` class.
+
+```php
+use midorikocak\nanodb\ArrayRepository;
+
+
+$tableName = 'users';
+
+$customValidator = new Validator();
+
+$repository = new ArrayRepository($tableName, $this->db, null , $customValidator);
+
+```
+
+Validators can implement `ValidableInterface` and `KeyValueValidableInterface`. You can find details in the source.
+
+### Class Repositories
+
+Let's say you have a simple user class.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class User
+{
+    private ?string $id;
+    private string $username;
+    private string $email;
+    private string $password;
+
+    public function __construct(?string $id, string $username, string $email, string $password)
+    {
+        $this->id = $id;
+        $this->username = $username;
+        $this->password = $password;
+        $this->email = $email;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setId(string $id)
+    {
+        $this->id = $id;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username)
+    {
+        $this->username = $username;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email)
+    {
+        $this->email = $email;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password)
+    {
+        $this->password = $password;
+    }
+}
+```
+
+You can create a `Users`repository, by implementing the `CrudInterface`.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace midorikocak\nanodb;
+
+use Exception;
+
+use function array_map;
+use function key;
+use function reset;
+
+class Users implements CrudInterface
+{
+    private DatabaseInterface $db;
+
+    public function __construct(DatabaseInterface $db)
+    {
+        $this->db = $db;
+    }
+
+    /**
+     * @return User
+    */
+    public function read(string $id)
+    {
+        $data = $this->db->select('users')->where('id', $id)->fetch();
+        if (!$data) {
+            throw new Exception('not found');
+        }
+        return self::fromArray($data);
+    }
+
+    public function readAll(array $constraints = [], array $columns = ['*']): array
+    {
+        $db = $this->db->select('users', $columns);
+
+        if (!empty($constraints)) {
+            $value = reset($constraints);
+            $key = key($constraints);
+            $db->where($key, $value);
+
+            unset($constraints[key($constraints)]);
+
+            foreach ($constraints as $key => $value) {
+                $db->and($key, $value);
+            }
+        }
+
+        $db->execute();
+        return array_map(fn($data) => self::fromArray($data), $db->fetchAll());
+    }
+
+    /**
+     * @param User $user
+     * @return User
+    */
+    public function save($user)
+    {
+        if ($user->getId()) {
+            $id = $user->getId();
+            $userData = self::toArray($user);
+            unset($userData['id']);
+            $this->db->update('users', $userData)->where('id', $id)->execute();
+            return $user;
+        }
+
+        $this->db->insert('users', self::toArray($user))->execute();
+
+        $lastInsertId = $this->db->lastInsertId();
+        $user->setId($lastInsertId);
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function remove($user): int
+    {
+        $id = $user->getId();
+        $this->db->delete('users')->where('id', $id)->execute();
+        return $this->db->rowCount();
+    }
+
+    /**
+     * @param User $user
+     * @return User
+    */
+    public static function fromArray(array $array): User
+    {
+        if (!isset($array['id'])) {
+            $array['id'] = null;
+        }
+        return new User($array['id'], $array['username'], $array['email'], $array['password']);
+    }
+
+    /**
+     * @param User $user
+     * @return array
+    */
+    public static function toArray(User $user): array
+    {
+        $toReturn = [
+            'username' => $user->getUsername(),
+            'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
+        ];
+
+        if ($user->getId()) {
+            $toReturn['id'] = $user->getId();
+        }
+
+        return $toReturn;
+    }
+}
+
+```
+
 
 ## Requirements
 
@@ -22,7 +313,7 @@ Strictly requires PHP 7.4.
 Via Composer
 
 ``` bash
-$ composer require midorikocak/nano
+$ composer require midorikocak/nanodb
 ```
 
 ## Usage
@@ -30,111 +321,12 @@ $ composer require midorikocak/nano
 Simply instantiate and include in your app.
 
 ``` php
-use midorikocak\nano\Api;
-
-require __DIR__ . '/vendor/autoload.php';
-
-$api = new Api();
 
 ```
 
-I know. It's not static.
+## Motivation and Warning
 
-### Defining REST resources 
-
-Defining rest routes and using wildcards are easy.
-
-``` php
-$message = 'Welcome to Nano';
-
-$api->get('/', function () use ($message) {
-    echo json_encode(['message' => $message]);
-    http_response_code(200);
-});
-
-$api->post('/', function () use ($message) {
-    $input = (array)json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
-    echo json_encode($input);
-    http_response_code(201);
-});
-
-$api->get('/echo/{$message}', function ($message) {
-    echo json_encode(['message' => $message]);
-    http_response_code(200);
-});
-
-```
-
-### Basic Auth
-
-It's possible hide your routed behind an authentication layer. Currently it expects basic auth, more methods to come soon.
-
-``` php
-
-$authFunction = function ($username, $password) {
-    return ($username == 'username' && $password == 'password');
-};
-
-$api->auth(function () use (&$api) {
-
-    $api->get('/entries/{id}', function ($id) {
-        echo json_encode(['id' => $id]);
-        http_response_code(201);
-    });
-
-    $api->post('/entries/{id}', function ($id) {
-        echo json_encode(['id' => $id]);
-        http_response_code(201);
-    });
-
-    $api->put('/entries/{id}', function ($id) {
-        echo json_encode(['id' => $id]);
-        http_response_code(204);
-    });
-
-    $api->delete('/entries/{id}', function ($id) {
-        http_response_code(204);
-    });
-
-}, $authFunction);
-```
-
-Hence the basic auth is not encrypted, using https is strictly advised.
-
-## Testing
-
-You can test your live API using `Guzzle/Client`
-
-``` php
-<?php
-
-declare(strict_types=1);
-
-namespace midorikocak\nano;
-
-use GuzzleHttp\Client;
-use PHPUnit\Framework\TestCase;
-
-class IntegrationTest extends TestCase
-{
-    public function testGet(): void
-    {
-        $client = new Client(
-            [
-                'base_uri' => $this->baseUri,
-                'http_errors' => false,
-            ],
-        );
-
-        $response = $client->request('GET', '/echo/hello');
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertStringContainsString('hello', (string)$response->getBody());
-    }
-```
-
-## Motivation
-
-Mostly educational purposes.
+Mostly educational purposes. Please use at your own risk.
 
 ## Change log
 
@@ -163,17 +355,17 @@ If you discover any security related issues, please email mtkocak@gmail.com inst
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/midorikocak/nano.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/midorikocak/nanodb.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/midorikocak/nano/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/midorikocak/nano.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/midorikocak/nano.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/midorikocak/nano.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/midorikocak/nanodb/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/midorikocak/nanodb.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/midorikocak/nanodb.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/midorikocak/nanodb.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/midorikocak/nano
-[link-travis]: https://travis-ci.org/midorikocak/nano
-[link-scrutinizer]: https://scrutinizer-ci.com/g/midorikocak/nano/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/midorikocak/nano
-[link-downloads]: https://packagist.org/packages/midorikocak/nano
+[link-packagist]: https://packagist.org/packages/midorikocak/nanodb
+[link-travis]: https://travis-ci.org/midorikocak/nanodb
+[link-scrutinizer]: https://scrutinizer-ci.com/g/midorikocak/nanodb/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/midorikocak/nanodb
+[link-downloads]: https://packagist.org/packages/midorikocak/nanodb
 [link-author]: https://github.com/midorikocak
 [link-contributors]: ../../contributors

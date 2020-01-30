@@ -1,14 +1,14 @@
 {
-    "name": "midorikocak/nano",
+    "name": "midorikocak/nanodb",
     "type": "library",
-    "description": "Nano is a very very tiny php app that allows you to create very fast rest interfaces.",
+    "description": "Nano DB is a tiny php library that allows you to define easily usable repositories.",
     "keywords": [
         "midorikocak",
-        "nano",
-        "api",
-        "rest"
+        "nanodb",
+        "database",
+        "datasource"
     ],
-    "homepage": "https://github.com/midorikocak/nano",
+    "homepage": "https://github.com/midorikocak/nano-db",
     "license": "MIT",
     "authors": [
         {
@@ -19,24 +19,25 @@
         }
     ],
     "require": {
-        "php" : "~7.4",
-        "ext-json": "*"
+        "php": "~7.4",
+        "ext-json": "*",
+        "midorikocak/querymaker": "^1.2",
+        "ext-pdo": "*"
     },
     "require-dev": {
-        "guzzlehttp/guzzle": "^6.5",
         "opsway/psr12-strict-coding-standard": "^0.3.0",
         "phpunit/phpunit": ">=8.0",
         "squizlabs/php_codesniffer": "^3.5",
-        "symfony/process": "^5.0"
+        "ext-pdo": "*"
     },
     "autoload": {
         "psr-4": {
-            "midorikocak\\nano\\": "src"
+            "midorikocak\\nanodb\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "midorikocak\\nano\\": "tests"
+            "midorikocak\\nanodb\\": "tests"
         }
     },
     "scripts": {
