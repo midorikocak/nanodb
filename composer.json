@@ -21,7 +21,7 @@
     "require": {
         "php": "~7.4",
         "ext-json": "*",
-        "midorikocak/querymaker": "^1.2",
+        "midorikocak/querymaker": "^1.2.3",
         "ext-pdo": "*"
     },
     "require-dev": {
