@@ -54,7 +54,19 @@ Operations are chained.
 If found, returns the data you need. If nothing found, empty array is returned.
 
 ```php
-    $db->select($tableName)->where('id', $id)->fetch();
+    print_r($db->select($tableName)->where('id', $id)->fetch());
+``` 
+
+Example output:
+
+```
+Array
+(
+    [id] => 1
+    [username] => username
+    [email] => email@email.com
+    [password] => 123456789
+)
 ``` 
 
 ### Insert
