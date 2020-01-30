@@ -48,7 +48,10 @@ Operations are chained.
     $insertedItem = $db->select($tableName)->where('id', $lastInsertId)->fetch();
 ```
 
+
 ### Select
+
+If found, returns the data you need. If nothing found, empty array is returned.
 
 ```php
     $db->select($tableName)->where('id', $id)->fetch();
@@ -64,7 +67,7 @@ Returns inserted array of data.
 
 ### Update
 
-Returns updated array.
+Returns updated array. If id does not exist, throws exception.
 
 ```php
    $db->update($tableName, $data)->where('id', $id)->execute();
@@ -72,7 +75,7 @@ Returns updated array.
 
 ### Delete
 
-Returns affected rows.
+Returns affected rows. If id does not exist, throws exception.
 
 ```php
     $db->delete($tableName)->where('id', $id)->execute();
