@@ -14,7 +14,21 @@ Nano DB is a tiny php library that allows you to define easily usable repositori
 There are 3 handy classes and 1 example in this library.
 Let's start with basics:
 
-## Database
+## Requirements
+
+Strictly requires PHP 7.4.
+
+## Install
+
+Via Composer
+
+``` bash
+$ composer require midorikocak/nanodb
+```
+
+## Usage 
+
+### Database
 
 To use database library, simple inject it with pdo.
     
@@ -300,27 +314,6 @@ class Users implements CrudInterface
         return $toReturn;
     }
 }
-
-```
-
-
-## Requirements
-
-Strictly requires PHP 7.4.
-
-## Install
-
-Via Composer
-
-``` bash
-$ composer require midorikocak/nanodb
-```
-
-## Usage
-
-Simply instantiate and include in your app.
-
-``` php
 
 ```
 
