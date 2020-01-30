@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace midorikocak\nanodb;
 
-use function array_intersect;
 use function array_key_exists;
 use function array_keys;
 use function filter_var;
@@ -182,10 +181,5 @@ class ArrayValidator implements ValidableInterface, KeyValueValidableInterface
         sort($keysToValidate);
 
         return $keys === $keysToValidate;
-    }
-
-    private static function arrayContains(array $smallArray, array $bigArray): bool
-    {
-        return sort($smallArray) === sort(array_intersect($smallArray, $bigArray));
     }
 }

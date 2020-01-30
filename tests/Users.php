@@ -19,7 +19,7 @@ class Users implements CrudInterface
         $this->db = $db;
     }
 
-    public function read(string $id)
+    public function read(string $id): User
     {
         $data = $this->db->select('users')->where('id', $id)->fetch();
         if (!$data) {
@@ -51,7 +51,7 @@ class Users implements CrudInterface
     /**
      * @param User $user
      */
-    public function save($user)
+    public function save($user): User
     {
         if ($user->getId()) {
             $id = $user->getId();

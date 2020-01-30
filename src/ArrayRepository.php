@@ -19,8 +19,12 @@ class ArrayRepository implements CrudInterface
     private ?KeyValueValidableInterface $validator;
     private $tableName;
 
-    public function __construct(string $tableName, DatabaseInterface $db, ?array $schema = null, ?KeyValueValidableInterface $validator = null)
-    {
+    public function __construct(
+        string $tableName,
+        DatabaseInterface $db,
+        ?array $schema = null,
+        ?KeyValueValidableInterface $validator = null
+    ) {
         $this->db = $db;
         $this->tableName = $tableName;
         $this->validator = $validator ?? new ArrayValidator();
