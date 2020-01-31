@@ -81,3 +81,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Nothing
 
+## [1.1.0] - 2020-01-31
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Readme examples.
+
+### Removed
+- AbstractValidator
+- ArrayConvertableInterface
+- ArrayConvertableTrait
+- ArrayUpdateableInterface
+- ArrayUpdateableTrait
+- ArrayValidator
+- ValidableInterface
+
+### Security
+- Nothing
+
+## [1.1.1] - 2020-01-31
+
+### Added
+- Nothing
+
+### Deprecated
+- CrudInterface
+
+### Fixed
+- CrudInterface renamed to RepositoryInterface
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+

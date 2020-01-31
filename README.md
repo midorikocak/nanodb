@@ -137,20 +137,6 @@ $repository = new ArrayRepository($tableName, $this->db, $schema);
 
 Here `$schema` array is a simple optional array for Array validator, checked on every input with data. You can override it by extending `ArrayValidator` class.
 
-```php
-use midorikocak\nanodb\ArrayRepository;
-
-
-$tableName = 'users';
-
-$customValidator = new Validator();
-
-$repository = new ArrayRepository($tableName, $this->db, null , $customValidator);
-
-```
-
-Validators can implement `ValidableInterface` and `KeyValueValidableInterface`. You can find details in the source.
-
 ### Class Repositories
 
 Let's say you have a simple user class.
@@ -232,7 +218,7 @@ use function array_map;
 use function key;
 use function reset;
 
-class Users implements CrudInterface
+class Users implements RepositoryInterface
 {
     private DatabaseInterface $db;
 

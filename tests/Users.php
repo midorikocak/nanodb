@@ -10,7 +10,7 @@ use function array_map;
 use function key;
 use function reset;
 
-class Users implements CrudInterface
+class Users implements RepositoryInterface
 {
     private DatabaseInterface $db;
 
@@ -25,7 +25,7 @@ class Users implements CrudInterface
         if (!$data) {
             throw new Exception('not found');
         }
-        return self::fromArray($data);
+        return User::fromArray($data);
     }
 
     public function readAll(array $constraints = [], array $columns = ['*']): array
@@ -45,7 +45,7 @@ class Users implements CrudInterface
         }
 
         $db->execute();
-        return array_map(fn($data) => self::fromArray($data), $db->fetchAll());
+        return array_map(fn($data) => User::fromArray($data), $db->fetchAll());
     }
 
     /**
@@ -55,13 +55,13 @@ class Users implements CrudInterface
     {
         if ($user->getId()) {
             $id = $user->getId();
-            $userData = self::toArray($user);
+            $userData = $user->toArray();
             unset($userData['id']);
             $this->db->update('users', $userData)->where('id', $id)->execute();
             return $user;
         }
 
-        $this->db->insert('users', self::toArray($user))->execute();
+        $this->db->insert('users', $user->toArray())->execute();
 
         $lastInsertId = $this->db->lastInsertId();
         $user->setId($lastInsertId);
@@ -76,28 +76,5 @@ class Users implements CrudInterface
         $id = $user->getId();
         $this->db->delete('users')->where('id', $id)->execute();
         return $this->db->rowCount();
-    }
-
-    public static function fromArray($array): User
-    {
-        if (!isset($array['id'])) {
-            $array['id'] = null;
-        }
-        return new User($array['id'], $array['username'], $array['email'], $array['password']);
-    }
-
-    public static function toArray(User $user): array
-    {
-        $toReturn = [
-            'username' => $user->getUsername(),
-            'email' => $user->getEmail(),
-            'password' => $user->getPassword(),
-        ];
-
-        if ($user->getId()) {
-            $toReturn['id'] = $user->getId();
-        }
-
-        return $toReturn;
     }
 }

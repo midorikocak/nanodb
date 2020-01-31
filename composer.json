@@ -21,8 +21,9 @@
     "require": {
         "php": "~7.4",
         "ext-json": "*",
-        "midorikocak/querymaker": "^1.2.3",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "midorikocak/arraytools": "^1.0",
+        "midorikocak/querymaker": "^1.2.3"
     },
     "require-dev": {
         "opsway/psr12-strict-coding-standard": "^0.3.0",

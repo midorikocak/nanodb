@@ -89,7 +89,7 @@ class RepositoryTest extends TestCase
             'password' => '12345update',
         ];
 
-        $updated = $this->users->save(Users::fromArray($updatedData));
+        $updated = $this->users->save(User::fromArray($updatedData));
         $this->assertNotEmpty($updated);
     }
 
@@ -125,7 +125,7 @@ class RepositoryTest extends TestCase
             'password' => '12345update',
         ];
 
-        $this->users->save(Users::fromArray($insertData));
+        $this->users->save(User::fromArray($insertData));
 
         $id = $this->db->lastInsertId();
 
@@ -138,6 +138,6 @@ class RepositoryTest extends TestCase
     {
         $first = $this->users->read('1');
         $this->firstUser['id'] = 1;
-        $this->assertEquals($this->firstUser, Users::toArray($first));
+        $this->assertEquals($this->firstUser, $first->toArray());
     }
 }

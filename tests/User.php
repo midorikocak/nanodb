@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace midorikocak\nanodb;
 
-class User
+class User extends AbstractUser
 {
     private ?string $id;
     private string $username;
