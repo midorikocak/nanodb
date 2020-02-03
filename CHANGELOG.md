@@ -121,3 +121,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Nothing
 
+
+## [1.1.2] - 2020-02-03
+
+### Added
+- ArrayRepository
+
+### Deprecated
+- Nothing
+
+### Fixed
+- ArrayRepository
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
