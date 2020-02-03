@@ -45,15 +45,15 @@ class Database implements DatabaseInterface
         return $this;
     }
 
-    public function where($key, $value): self
+    public function where($key, $value, string $operator = '='): self
     {
-        $this->queryMaker->where($key, $value);
+        $this->queryMaker->where($key, $value, $operator);
         return $this;
     }
 
-    public function and($key, $value): self
+    public function and($key, $value, string $operator = '='): self
     {
-        $this->queryMaker->and($key, $value);
+        $this->queryMaker->and($key, $value, $operator);
         return $this;
     }
 
@@ -79,9 +79,9 @@ class Database implements DatabaseInterface
         return $this;
     }
 
-    public function or($key, $value): self
+    public function or($key, $value, string $operator = '='): self
     {
-        $this->queryMaker->or($key, $value);
+        $this->queryMaker->or($key, $value, $operator);
         return $this;
     }
 

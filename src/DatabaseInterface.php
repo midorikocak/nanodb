@@ -18,11 +18,17 @@ interface DatabaseInterface
 
     public function insert($table, array $values): self;
 
-    public function where($key, $value): self;
+    public function where($key, $value, string $operator = '='): self;
 
-    public function and($key, $value): self;
+    public function orderBy($key, string $order = 'ASC'): self;
 
-    public function or($key, $value): self;
+    public function offset(int $offset): self;
+
+    public function limit(int $limit): self;
+
+    public function and($key, $value, string $operator = '='): self;
+
+    public function or($key, $value, string $operator = '='): self;
 
     public function between($key, $before, $after): self;
 
