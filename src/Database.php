@@ -23,24 +23,28 @@ class Database implements DatabaseInterface
 
     public function select($table, array $columns = ['*']): self
     {
+        $this->reset();
         $this->queryMaker = QueryMaker::select($table, $columns);
         return $this;
     }
 
     public function delete($table): self
     {
+        $this->reset();
         $this->queryMaker = QueryMaker::delete($table);
         return $this;
     }
 
     public function update($table, array $values): self
     {
+        $this->reset();
         $this->queryMaker = QueryMaker::update($table, $values);
         return $this;
     }
 
     public function insert($table, array $values): self
     {
+        $this->reset();
         $this->queryMaker = QueryMaker::insert($table, $values);
         return $this;
     }
@@ -120,5 +124,11 @@ class Database implements DatabaseInterface
 
         $toReturn = $this->statement->fetchAll(PDO::FETCH_ASSOC);
         return $toReturn === false ? [] : $toReturn;
+    }
+
+    private function reset()
+    {
+        $this->statement = null;
+        $this->queryMaker = null;
     }
 }

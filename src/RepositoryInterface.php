@@ -14,7 +14,12 @@ interface RepositoryInterface
     /**
      * @return array[] | object[]
      */
-    public function readAll(array $constraints = [], array $columns = []): array;
+    public function readAll(
+        array $filter = [],
+        array $columns = ['*'],
+        ?int $limit = null,
+        ?int $offset = null
+    ): array;
 
     /**
      * @param array|object $item if has id key or property, updates, else creates
