@@ -259,20 +259,32 @@ class Users implements RepositoryInterface
         return self::fromArray($data);
     }
 
-    public function readAll(array $constraints = [], array $columns = ['*']): array
-    {
+    public function readAll(
+        array $filter = [],
+        array $columns = ['*'],
+        ?int $limit = null,
+        ?int $offset = null
+    ):array    {
         $db = $this->db->select('users', $columns);
 
-        if (!empty($constraints)) {
-            $value = reset($constraints);
-            $key = key($constraints);
+        if (!empty($filter)) {
+            $value = reset($filter);
+            $key = key($filter);
             $db->where($key, $value);
 
-            unset($constraints[key($constraints)]);
+            unset($filter[key($filter)]);
 
-            foreach ($constraints as $key => $value) {
+            foreach ($filter as $key => $value) {
                 $db->and($key, $value);
             }
+        }
+
+        if ($limit) {
+            $this->db->limit($limit);
+        }
+
+        if ($limit && $offset) {
+            $this->db->offset($offset);
         }
 
         $db->execute();
