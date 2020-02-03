@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace midorikocak\nanodb;
 
+use InvalidArgumentException;
 use midorikocak\querymaker\QueryInterface;
 use midorikocak\querymaker\QueryMaker;
 use PDO;
@@ -13,7 +14,6 @@ class Database implements DatabaseInterface
 {
     private PDO $db;
     private ?QueryInterface $queryMaker = null;
-    private ?int $affectedRows = 0;
     private ?PDOStatement $statement = null;
 
     public function __construct(PDO $db)
@@ -54,6 +54,28 @@ class Database implements DatabaseInterface
     public function and($key, $value): self
     {
         $this->queryMaker->and($key, $value);
+        return $this;
+    }
+
+    public function orderBy($key, $order = 'ASC'): self
+    {
+        if ($order !== 'DESC' && $order !== 'ASC') {
+            throw new InvalidArgumentException('Invalid order value');
+        }
+
+        $this->queryMaker->orderBy($key, $order);
+        return $this;
+    }
+
+    public function limit(int $limit): self
+    {
+        $this->queryMaker->limit($limit);
+        return $this;
+    }
+
+    public function offset(int $offset): self
+    {
+        $this->queryMaker->offset($offset);
         return $this;
     }
 

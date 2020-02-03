@@ -74,6 +74,20 @@ class DatabaseTest extends TestCase
         $this->assertEquals($this->firstUser, $firstItem);
     }
 
+    public function testOrder(): void
+    {
+        $firstItem =
+            $this->db
+                ->select('users')
+                ->orderBy('id')
+                ->limit(1)
+                ->offset(0)
+                ->fetch();
+        $this->firstUser['id'] = 1;
+
+        $this->assertEquals($this->firstUser, $firstItem);
+    }
+
     public function testSelectAll(): void
     {
         $allItems = $this->db->select('users')->fetchAll();
@@ -131,13 +145,13 @@ class DatabaseTest extends TestCase
         $this->assertEquals($lastInsertUser, $insertedItem);
     }
 
-    public function testDelete(): void
+    public function testDeleteCount(): void
     {
         $this->db->delete('users')->execute();
         $this->assertEquals(2, $this->db->rowCount());
     }
 
-    public function testDeletee(): void
+    public function testDelete(): void
     {
         $firstItem = $this->db->select('users')->fetch();
         $this->firstUser['id'] = 1;

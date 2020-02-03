@@ -21,7 +21,6 @@ class RepositoryTest extends TestCase
 
     private array $firstUser;
     private array $secondUser;
-    private array $updateUser;
 
     public function setUp(): void
     {

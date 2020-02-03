@@ -69,6 +69,22 @@ Array
 )
 ``` 
 
+### Order by
+
+To order results use the `orderBy($fieldName)` method.
+
+```php
+    print_r($db->select($tableName)->where('id', $id)->orderBy('id', 'DESC')->fetch());
+``` 
+
+### Offset and Limit
+
+To limit and offset results use the `limit($limit)` and `offset($offset)` methods.
+
+```php
+    print_r($db->select($tableName)->where('id', $id)->limit(1)->offset(1)->fetch());
+``` 
+
 ### Insert
 
 Insert using an array of data. Validation is your responsibility.
