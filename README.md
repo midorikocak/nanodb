@@ -109,9 +109,9 @@ Returns affected rows. If id does not exist, throws exception.
     $db->delete($tableName)->delete('id', $id)->execute();
 ``` 
 
-## CrudInterface
+## RepositoryInterface
 
-The crud interface is the interface of repositories.
+The repository interface is the interface of repositories.
 
 ```php
 <?php
@@ -120,17 +120,21 @@ declare(strict_types=1);
 
 namespace midorikocak\nanodb;
 
-interface CrudInterface
+interface RepositoryInterface
 {
     public function read(string $id);
 
-    public function readAll(array $constraints = [], array $columns = []): array;
+    public function readAll(
+            array $filter = [],
+            array $columns = ['*'],
+            ?int $limit = null,
+            ?int $offset = null
+        ): array;
 
     public function save($item);
 
     public function remove($data): int;
 }
-
 ```
 
 If you want to use arrays to interact with your database, you can use the array repository.
