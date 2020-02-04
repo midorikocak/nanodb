@@ -173,3 +173,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Nothing
 
+
+## [1.1.5] - 2020-02-03
+
+### Added
+- Database Query method
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Repository readAll signature.
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
+

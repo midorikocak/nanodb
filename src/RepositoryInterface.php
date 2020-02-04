@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace midorikocak\nanodb;
 
+use midorikocak\querymaker\QueryInterface;
+
 interface RepositoryInterface
 {
     /**
@@ -14,12 +16,7 @@ interface RepositoryInterface
     /**
      * @return array[] | object[]
      */
-    public function readAll(
-        array $filter = [],
-        array $columns = ['*'],
-        ?int $limit = null,
-        ?int $offset = null
-    ): array;
+    public function readAll(?QueryInterface $query = null): array;
 
     /**
      * @param array|object $item if has id key or property, updates, else creates

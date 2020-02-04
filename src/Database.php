@@ -21,6 +21,13 @@ class Database implements DatabaseInterface
         $this->db = $db;
     }
 
+    public function query(QueryInterface $queryMaker): self
+    {
+        $this->reset();
+        $this->queryMaker = $queryMaker;
+        return $this;
+    }
+
     public function select($table, array $columns = ['*']): self
     {
         $this->reset();

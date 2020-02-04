@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace midorikocak\nanodb;
 
+use midorikocak\querymaker\QueryInterface;
 use PDO;
 
 interface DatabaseInterface
@@ -41,4 +42,6 @@ interface DatabaseInterface
     public function fetch(): array;
 
     public function fetchAll(): array;
+
+    public function query(QueryInterface $query);
 }

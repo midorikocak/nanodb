@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace midorikocak\nanodb;
 
 use Exception;
+use midorikocak\querymaker\QueryInterface;
 
 use function array_map;
-use function key;
-use function reset;
 
 class Users implements RepositoryInterface
 {
@@ -28,36 +27,13 @@ class Users implements RepositoryInterface
         return User::fromArray($data);
     }
 
-    public function readAll(
-        array $filter = [],
-        array $columns = ['*'],
-        ?int $limit = null,
-        ?int $offset = null
-    ): array {
-        $db = $this->db->select('users', $columns);
-
-        //$db = $this->db->select('users', $columns);
-
-        if (!empty($filter)) {
-            $value = reset($filter);
-            $key = key($filter);
-            $db->where($key, $value);
-
-            unset($filter[key($filter)]);
-
-            foreach ($filter as $key => $value) {
-                $db->and($key, $value);
-            }
+    public function readAll(?QueryInterface $query = null): array
+    {
+        if ($query !== null) {
+            $db = $this->db->query($query);
+        } else {
+            $db = $this->db->select('users');
         }
-
-        if ($limit) {
-            $this->db->limit($limit);
-        }
-
-        if ($limit && $offset) {
-            $this->db->offset($offset);
-        }
-
         $db->execute();
         return array_map(fn($data) => User::fromArray($data), $db->fetchAll());
     }

@@ -6,10 +6,9 @@ namespace midorikocak\nanodb;
 
 use Exception;
 use midorikocak\arraytools\ArrayValidator;
+use midorikocak\querymaker\QueryInterface;
 
 use function array_key_exists;
-use function key;
-use function reset;
 
 /**
  * Repository is a class that receives arrays as input data and returns array of arrays
@@ -78,34 +77,13 @@ class ArrayRepository implements RepositoryInterface
         return $this->db->fetch();
     }
 
-    public function readAll(
-        array $filter = [],
-        array $columns = ['*'],
-        ?int $limit = null,
-        ?int $offset = null
-    ): array {
-        $db = $this->db->select($this->tableName, $columns);
-
-        if (!empty($filter)) {
-            $value = reset($filter);
-            $key = key($filter);
-            $db->where($key, $value);
-
-            unset($filter[key($filter)]);
-
-            foreach ($filter as $key => $value) {
-                $db->and($key, $value);
-            }
+    public function readAll(?QueryInterface $query = null): array
+    {
+        if ($query !== null) {
+            $db = $this->db->query($query);
+        } else {
+            $db = $this->db->select($this->tableName);
         }
-
-        if ($limit) {
-            $this->db->limit($limit);
-        }
-
-        if ($limit && $offset) {
-            $this->db->offset($offset);
-        }
-
         $db->execute();
         return $db->fetchAll();
     }
