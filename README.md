@@ -36,7 +36,8 @@ To use database library, simple inject it with pdo.
     use midorikocak\nanodb\Database;
 
     $pdo = new PDO('sqlite::memory:');
-    $db = new Database($pdo);
+    $query = new QueryMaker();
+    $db = new Database($pdo, $query);
 ``` 
 
 Operations are chained.
