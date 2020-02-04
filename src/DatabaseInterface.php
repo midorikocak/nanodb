@@ -9,7 +9,7 @@ use PDO;
 
 interface DatabaseInterface
 {
-    public function __construct(PDO $db);
+    public function __construct(PDO $db, QueryInterface $query);
 
     public function select($table, array $columns = ['*']): self;
 

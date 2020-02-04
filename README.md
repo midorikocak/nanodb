@@ -221,7 +221,7 @@ class User
 }
 ```
 
-You can create a `Users`repository, by implementing the `CrudInterface`.
+You can create a `Users`repository, by implementing the `RepositoryInterface`.
 
 ```php
 <?php

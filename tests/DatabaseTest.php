@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace midorikocak\nanodb;
 
+use midorikocak\querymaker\QueryMaker;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +20,7 @@ class DatabaseTest extends TestCase
     public function setUp(): void
     {
         $this->pdo = new PDO('sqlite::memory:');
-        $this->db = new Database($this->pdo);
+        $this->db = new Database($this->pdo, new QueryMaker());
         $this->createTable();
 
         $this->firstUser = [

@@ -6,65 +6,65 @@ namespace midorikocak\nanodb;
 
 use InvalidArgumentException;
 use midorikocak\querymaker\QueryInterface;
-use midorikocak\querymaker\QueryMaker;
 use PDO;
 use PDOStatement;
 
 class Database implements DatabaseInterface
 {
     private PDO $db;
-    private ?QueryInterface $queryMaker = null;
+    private ?QueryInterface $query = null;
     private ?PDOStatement $statement = null;
 
-    public function __construct(PDO $db)
+    public function __construct(PDO $db, QueryInterface $query)
     {
         $this->db = $db;
+        $this->query = $query;
     }
 
-    public function query(QueryInterface $queryMaker): self
+    public function query(QueryInterface $query): self
     {
         $this->reset();
-        $this->queryMaker = $queryMaker;
+        $this->query = $query;
         return $this;
     }
 
     public function select($table, array $columns = ['*']): self
     {
         $this->reset();
-        $this->queryMaker = QueryMaker::select($table, $columns);
+        $this->query->select($table, $columns);
         return $this;
     }
 
     public function delete($table): self
     {
         $this->reset();
-        $this->queryMaker = QueryMaker::delete($table);
+        $this->query->delete($table);
         return $this;
     }
 
     public function update($table, array $values): self
     {
         $this->reset();
-        $this->queryMaker = QueryMaker::update($table, $values);
+        $this->query->update($table, $values);
         return $this;
     }
 
     public function insert($table, array $values): self
     {
         $this->reset();
-        $this->queryMaker = QueryMaker::insert($table, $values);
+        $this->query->insert($table, $values);
         return $this;
     }
 
     public function where($key, $value, string $operator = '='): self
     {
-        $this->queryMaker->where($key, $value, $operator);
+        $this->query->where($key, $value, $operator);
         return $this;
     }
 
     public function and($key, $value, string $operator = '='): self
     {
-        $this->queryMaker->and($key, $value, $operator);
+        $this->query->and($key, $value, $operator);
         return $this;
     }
 
@@ -74,31 +74,31 @@ class Database implements DatabaseInterface
             throw new InvalidArgumentException('Invalid order value');
         }
 
-        $this->queryMaker->orderBy($key, $order);
+        $this->query->orderBy($key, $order);
         return $this;
     }
 
     public function limit(int $limit): self
     {
-        $this->queryMaker->limit($limit);
+        $this->query->limit($limit);
         return $this;
     }
 
     public function offset(int $offset): self
     {
-        $this->queryMaker->offset($offset);
+        $this->query->offset($offset);
         return $this;
     }
 
     public function or($key, $value, string $operator = '='): self
     {
-        $this->queryMaker->or($key, $value, $operator);
+        $this->query->or($key, $value, $operator);
         return $this;
     }
 
     public function between($key, $before, $after): self
     {
-        $this->queryMaker->between($key, $before, $after);
+        $this->query->between($key, $before, $after);
         return $this;
     }
 
@@ -114,8 +114,8 @@ class Database implements DatabaseInterface
 
     public function execute(): bool
     {
-        $this->statement = $this->db->prepare($this->queryMaker->getStatement());
-        return $this->statement->execute($this->queryMaker->getParams());
+        $this->statement = $this->db->prepare($this->query->getStatement());
+        return $this->statement->execute($this->query->getParams());
     }
 
     public function fetch(): array
@@ -136,6 +136,5 @@ class Database implements DatabaseInterface
     private function reset()
     {
         $this->statement = null;
-        $this->queryMaker = null;
     }
 }
