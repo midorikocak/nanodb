@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace midorikocak\nanodb;
 
-use midorikocak\querymaker\QueryMaker;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
