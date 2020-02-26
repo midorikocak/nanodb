@@ -20,7 +20,7 @@ class DatabaseTest extends TestCase
     public function setUp(): void
     {
         $this->pdo = new PDO('sqlite::memory:');
-        $this->db = new Database($this->pdo, new QueryMaker());
+        $this->db = new Database($this->pdo);
         $this->createTable();
 
         $this->firstUser = [

@@ -6,6 +6,7 @@ namespace midorikocak\nanodb;
 
 use InvalidArgumentException;
 use midorikocak\querymaker\QueryInterface;
+use midorikocak\querymaker\QueryMaker;
 use PDO;
 use PDOStatement;
 
@@ -15,10 +16,10 @@ class Database implements DatabaseInterface
     private ?QueryInterface $query = null;
     private ?PDOStatement $statement = null;
 
-    public function __construct(PDO $db, QueryInterface $query)
+    public function __construct(PDO $db, ?QueryInterface $query = null)
     {
         $this->db = $db;
-        $this->query = $query;
+        $this->query = $query ?? new QueryMaker();
     }
 
     public function query(QueryInterface $query): self

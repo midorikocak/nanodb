@@ -192,7 +192,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing
 
 
-## [1.2] - 2020-02-04
+## [1.2.1] - 2020-02-04
 
 ### Added
 - Nothing
@@ -203,6 +203,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Changed Database Constructor
 - Updated QueryMaker
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
+## [1.2.2] - 2020-02-26
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Changed Database Constructor
+- Allow optional query parameter
 
 ### Removed
 - Nothing
