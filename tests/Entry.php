@@ -6,9 +6,7 @@ namespace midorikocak\nanodb;
 
 class Entry extends Item
 {
-    public ?string $id = null;
-
-    public ?string $userId = null;
+    private ?string $userId = null;
 
     private string $title;
 
@@ -23,7 +21,6 @@ class Entry extends Item
 
     public function addMeaning(Meaning $meaning)
     {
-        $meaning->setEntryId($this->getId());
         $this->meanings[] = $meaning;
     }
 

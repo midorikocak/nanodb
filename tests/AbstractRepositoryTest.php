@@ -68,4 +68,18 @@ class AbstractRepositoryTest extends TestCase
 
         self::assertNotEmpty($this->dictionary->save($entry));
     }
+
+    public function testRead(): void
+    {
+        $entry = new Entry('Object');
+
+        $newEntry = $this->dictionary->save($entry);
+
+        $newEntry->addMeaning(new Meaning('A thing with a name'));
+        $newEntry->addMeaning(new Meaning('Operated by subject'));
+
+        $this->dictionary->save($newEntry);
+        $results = $this->dictionary->read($newEntry->getId());
+        $this->assertNotEmpty($results);
+    }
 }

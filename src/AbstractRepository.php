@@ -70,19 +70,17 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     public function save($item): Item
     {
+        $itemData = array_filter($item->toArray(), fn($item) => !is_array($item));
+
         if ($item->getId() !== null) {
-            $data = $item->toArray();
+            $id = $itemData['id'];
 
-            $id = $data['id'];
+            unset($itemData['id']);
 
-            unset($data['id']);
-
-            $this->db->update($this->tableName, $data)->where('id', $id)->execute();
+            $this->db->update($this->tableName, $itemData)->where('id', $id)->execute();
 
             return $this->read($id);
         }
-
-        $itemData = array_filter($item->toArray(), fn($item) => !is_array($item));
 
         if ($this->db->insert($this->tableName, $itemData)->execute() === false) {
             throw new Exception('Not Found.');

@@ -12,7 +12,7 @@ class Item
     use ArrayConvertableTrait;
     use ArrayUpdateableTrait;
 
-    private $id;
+    protected ?string $id = null;
 
     public function getId(): ?string
     {

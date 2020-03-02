@@ -25,14 +25,14 @@ class Dictionary extends AbstractRepository
 
         foreach ($meanings as &$meaning) {
             if ($meaning->getId() === null) {
+                $meaning->setEntryId($newEntry->getId());
                 $this->db->insert('meanings', $meaning->toArray())->execute();
                 $meaning->setId($this->db->lastInsertId());
-                $meaning->setEntryId($entry->getId());
             } else {
+                $meaning->setEntryId($entry->getId());
                 $this->db->update('meanings', $meaning->toArray());
             }
         }
-
         return $entry;
     }
 
@@ -43,9 +43,11 @@ class Dictionary extends AbstractRepository
          */
         $entry = parent::read($id);
 
-        $meaningsData = $this->db->select('meaings')->where('entry_id', $id)->fetchAll();
-        $meanings = array_map(fn($data) => Meaning::fromArray($data), $meaningsData);
+        $meaningsData = $this->db->select('meanings')->where('entry_id', $id)->fetchAll();
 
+        $meanings = array_map(function ($data) {
+            return Meaning::fromArray($data);
+        }, $meaningsData);
         $entry->setMeanings($meanings);
 
         return $entry;

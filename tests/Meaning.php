@@ -7,8 +7,14 @@ namespace midorikocak\nanodb;
 class Meaning extends Item
 {
     private string $meaning;
-    private ?string $entryId;
-    private ?string $id = null;
+    private ?string $entryId = null;
+
+    public function __construct(string $meaning, ?string $id = null, ?string $entryId = null)
+    {
+        $this->meaning = $meaning;
+        $this->id = $id;
+        $this->entryId = $entryId;
+    }
 
     public function getId(): ?string
     {
@@ -28,11 +34,6 @@ class Meaning extends Item
     public function setEntryId(?string $entryId)
     {
         $this->entryId = $entryId;
-    }
-
-    public function __construct($meaning)
-    {
-        $this->meaning = $meaning;
     }
 
     public function getMeaning(): string
