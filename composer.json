@@ -22,7 +22,7 @@
         "php": "~7.4",
         "ext-json": "*",
         "ext-pdo": "*",
-        "midorikocak/arraytools": "^1.0",
+        "midorikocak/arraytools": "dev-master",
         "midorikocak/querymaker": "^1.4.1"
     },
     "require-dev": {
