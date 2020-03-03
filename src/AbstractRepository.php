@@ -12,6 +12,7 @@ use function array_filter;
 use function array_key_exists;
 use function array_map;
 use function is_array;
+use function is_null;
 
 abstract class AbstractRepository implements RepositoryInterface
 {
@@ -70,7 +71,7 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     public function save($item): Item
     {
-        $itemData = array_filter($item->toArray(), fn($item) => !is_array($item));
+        $itemData = array_filter($item->toArray(), fn($item) => !is_array($item) && !is_null($item));
 
         if ($item->getId() !== null) {
             $id = $itemData['id'];
