@@ -23,7 +23,8 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "midorikocak/arraytools": "dev-master",
-        "midorikocak/querymaker": "^1.4.1"
+        "midorikocak/querymaker": "^1.4.1",
+        "phpunit/php-token-stream": "^4.0"
     },
     "require-dev": {
         "opsway/psr12-strict-coding-standard": "^0.3.0",
