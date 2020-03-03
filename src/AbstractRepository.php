@@ -23,7 +23,6 @@ abstract class AbstractRepository implements RepositoryInterface
     public function __construct(Database $db)
     {
         $this->db = $db;
-        $this->className = __NAMESPACE__ . '\\' . $this->className;
     }
 
     /**

@@ -11,7 +11,7 @@ use function array_map;
 class Dictionary extends AbstractRepository
 {
     protected string $tableName = 'entries';
-    protected string $className = 'Entry';
+    protected string $className = __NAMESPACE__ . '\\' . 'Entry';
 
     /**
      * @param Entry $entry
