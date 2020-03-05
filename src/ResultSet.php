@@ -15,7 +15,6 @@ use function reset;
 class ResultSet
 {
     private int $total;
-    private array $items;
     private int $pageSize;
     private int $page;
     private ?int $offset;
@@ -31,10 +30,6 @@ class ResultSet
         Database $db,
         QueryInterface $query
     ): self {
-        $db->query($query);
-        $db->execute();
-        $items = $db->fetchAll();
-
         $counterQuery = $query->count();
         $db->query($counterQuery);
         $db->execute();
@@ -43,7 +38,6 @@ class ResultSet
 
         $resultSet = new self();
         $resultSet->total = (int) reset($counted);
-        $resultSet->items = $items;
 
         $queryString = $query->getQuery();
         preg_match('/FROM (\S*)( WHERE)?/', $queryString, $tableMatch);
@@ -77,7 +71,6 @@ class ResultSet
     {
         return [
             'total' => $this->total,
-            'items' => $this->items,
             'pageSize' => $this->pageSize,
             'page' => $this->page,
             'offset' => $this->offset,
