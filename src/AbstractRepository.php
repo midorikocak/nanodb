@@ -37,7 +37,7 @@ abstract class AbstractRepository implements RepositoryInterface
     public function read(string $id): Item
     {
         if ($id) {
-            $this->db->select($this->tableName)->where('id', $id)->execute();
+            $this->db->select($this->tableName)->where($this->primaryKey, $id)->execute();
         } else {
             $this->db->select($this->tableName)->execute();
         }
@@ -87,11 +87,11 @@ abstract class AbstractRepository implements RepositoryInterface
         $itemData = array_filter($item->toArray(), fn($item) => !is_array($item) && $item);
 
         if ($item->getId() !== null) {
-            $id = $itemData['id'];
+            $id = $itemData[$this->primaryKey];
 
-            unset($itemData['id']);
+            unset($itemData[$this->primaryKey]);
 
-            $this->db->update($this->tableName, $itemData)->where('id', $id)->execute();
+            $this->db->update($this->tableName, $itemData)->where($this->primaryKey, $id)->execute();
 
             return $this->read($id);
         }
@@ -101,7 +101,7 @@ abstract class AbstractRepository implements RepositoryInterface
         }
 
         $lastInsertId = $this->db->lastInsertId();
-        $updatedItem = $this->db->select($this->tableName)->where('id', $lastInsertId)->fetch();
+        $updatedItem = $this->db->select($this->tableName)->where($this->primaryKey, $lastInsertId)->fetch();
 
         $item = $this->className::fromArray($updatedItem);
         $item->setFromArray($updatedItem);
@@ -112,7 +112,7 @@ abstract class AbstractRepository implements RepositoryInterface
     {
         $id = $item->getId();
         if ($id !== null) {
-            $this->db->delete($this->tableName)->where('id', $id)->execute();
+            $this->db->delete($this->tableName)->where($this->primaryKey, $id)->execute();
             return $this->db->rowCount();
         }
         return 0;
@@ -128,7 +128,7 @@ abstract class AbstractRepository implements RepositoryInterface
         return strtolower(preg_replace('%([A-Z])([a-z])%', '_\1\2', $camel));
     }
 
-    private static function makeCamel($kebab, $capitalizeFirstCharacter = false)
+    private static function makeCamel($kebab, $capitalizeFirstCharacter = false): string
     {
         $str = str_replace('-', '', ucwords($kebab, '-'));
         $str = str_replace('_', '', ucwords($str, '_'));
