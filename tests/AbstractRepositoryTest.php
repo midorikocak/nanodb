@@ -8,6 +8,7 @@ use midorikocak\querymaker\QueryMaker;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 class AbstractRepositoryTest extends TestCase
 {
@@ -81,5 +82,32 @@ class AbstractRepositoryTest extends TestCase
         $this->dictionary->save($newEntry);
         $results = $this->dictionary->read($newEntry->getId());
         $this->assertNotEmpty($results);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testReadAll(): void
+    {
+        $entry = new Entry('Object');
+
+        $newEntry = $this->dictionary->save($entry);
+
+        $newEntry->addMeaning(new Meaning('A thing with a name'));
+        $newEntry->addMeaning(new Meaning('Operated by subject'));
+        $newEntry->addMeaning(new Meaning('Operated by subject'));
+        $newEntry->addMeaning(new Meaning('Operated by subject'));
+        $newEntry->addMeaning(new Meaning('Operated by subject'));
+        $newEntry->addMeaning(new Meaning('Operated by subject'));
+
+        $this->dictionary->save($newEntry);
+        $results = $this->dictionary->readAll();
+        $this->assertNotEmpty($results);
+
+        $queryMaker = new QueryMaker();
+
+        $query = $queryMaker->select('meanings')->limit(2)->offset(3);
+        $resultArray = $this->dictionary->readResultSet($query);
+        self::assertEquals(2, $resultArray['page']);
     }
 }

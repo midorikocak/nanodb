@@ -36,6 +36,13 @@ class Database implements DatabaseInterface
         return $this;
     }
 
+    public function count($table): self
+    {
+        $this->reset();
+        $this->query->count($table);
+        return $this;
+    }
+
     public function delete($table): self
     {
         $this->reset();

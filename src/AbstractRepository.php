@@ -12,11 +12,17 @@ use function array_filter;
 use function array_key_exists;
 use function array_map;
 use function is_array;
-use function is_null;
+use function lcfirst;
+use function preg_replace;
+use function str_replace;
+use function strtolower;
+use function ucwords;
 
 abstract class AbstractRepository implements RepositoryInterface
 {
     protected Database $db;
+    protected string $primaryKey = '';
+    protected array $foreignKeys = [];
     protected string $tableName = '';
     protected string $className = '';
 
@@ -38,6 +44,11 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->className::fromArray($this->db->fetch());
     }
 
+    public function readResultSet(QueryInterface $query): array
+    {
+        return ResultSet::getResultArray($this->db, $query);
+    }
+
     /**
      * @return Item[]
      */
@@ -52,15 +63,18 @@ abstract class AbstractRepository implements RepositoryInterface
         $db->execute();
         $items = $db->fetchAll();
         return array_map(function ($item) {
-            $article = $this->className::fromArray($item);
-            if (array_key_exists('id', $item)) {
-                $article->setId($item['id']);
-            }
-            if (array_key_exists('user_id', $item)) {
-                $article->setUserId($item['user_id']);
+            $object = $this->className::fromArray($item);
+            if (array_key_exists($this->primaryKey, $item)) {
+                $object->{self::getSetter($this->primaryKey)}($item[$this->primaryKey]);
             }
 
-            return $article;
+            foreach ($this->foreignKeys as $key) {
+                if (array_key_exists($key, $item)) {
+                    $object->{self::getSetter($key)}($item[$key]);
+                }
+            }
+
+            return $object;
         }, $items);
     }
 
@@ -70,7 +84,7 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     public function save($item): Item
     {
-        $itemData = array_filter($item->toArray(), fn($item) => !is_array($item) && !is_null($item));
+        $itemData = array_filter($item->toArray(), fn($item) => !is_array($item) && $item);
 
         if ($item->getId() !== null) {
             $id = $itemData['id'];
@@ -102,5 +116,26 @@ abstract class AbstractRepository implements RepositoryInterface
             return $this->db->rowCount();
         }
         return 0;
+    }
+
+    private static function getSetter(string $arrayKey): string
+    {
+        return 'set' . lcfirst(self::makeCamel($arrayKey));
+    }
+
+    private static function makeKebab($camel): string
+    {
+        return strtolower(preg_replace('%([A-Z])([a-z])%', '_\1\2', $camel));
+    }
+
+    private static function makeCamel($kebab, $capitalizeFirstCharacter = false)
+    {
+        $str = str_replace('-', '', ucwords($kebab, '-'));
+
+        if (!$capitalizeFirstCharacter) {
+            $str = lcfirst($str);
+        }
+
+        return $str;
     }
 }

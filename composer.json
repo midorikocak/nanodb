@@ -22,8 +22,8 @@
         "php": "~7.4",
         "ext-json": "*",
         "ext-pdo": "*",
-        "midorikocak/arraytools": "dev-master",
-        "midorikocak/querymaker": "^1.4.1",
+        "midorikocak/arraytools": "^1.0",
+        "midorikocak/querymaker": "^1.4.3",
         "phpunit/php-token-stream": "^4.0"
     },
     "require-dev": {
@@ -53,5 +53,7 @@
     },
     "config": {
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
