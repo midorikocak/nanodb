@@ -21,7 +21,7 @@ use function ucwords;
 abstract class AbstractRepository implements RepositoryInterface
 {
     protected Database $db;
-    protected string $primaryKey = '';
+    protected string $primaryKey = 'id';
     protected array $foreignKeys = [];
     protected string $tableName = '';
     protected string $className = '';

@@ -12,6 +12,8 @@ class Dictionary extends AbstractRepository
 {
     protected string $tableName = 'entries';
     protected string $className = __NAMESPACE__ . '\\' . 'Entry';
+    protected string $primaryKey = 'id';
+    protected array $foreignKeys = ['user_Id'];
 
     /**
      * @param Entry $entry
