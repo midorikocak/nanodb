@@ -131,6 +131,7 @@ abstract class AbstractRepository implements RepositoryInterface
     private static function makeCamel($kebab, $capitalizeFirstCharacter = false)
     {
         $str = str_replace('-', '', ucwords($kebab, '-'));
+        $str = str_replace('_', '', ucwords($str, '_'));
 
         if (!$capitalizeFirstCharacter) {
             $str = lcfirst($str);
