@@ -30,7 +30,7 @@ class ResultSet
         Database $db,
         QueryInterface $query
     ): self {
-        $counterQuery = $query->count();
+        $counterQuery = $query->count(null, true);
         $db->query($counterQuery);
         $db->execute();
 
